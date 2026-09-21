@@ -43,7 +43,7 @@ The geometry was modelled in CATIA V5 and exported as STL, including the four
 cylindrical stilts that hold the body above the floor.
 
 <p align="center">
-  <img src="results/figures/ahmed_body_catia.png" width="650" alt="Ahmed body modelled in CATIA V5">
+  <img src="results/figures/Ahmedbody_Catiav5.png" width="650" alt="Ahmed body modelled in CATIA V5">
 </p>
 
 | Length L | Width W | Height H | Ground clearance | Slant angle | Frontal area A |
@@ -305,7 +305,7 @@ small viscous drag, are not.
 ### Flow field
 
 <p align="center">
-  <img src="results/figures/flow_midplane.png" width="750" alt="Velocity magnitude on the symmetry plane">
+  <img src="results/figures/flow_Ahmedbody.png" width="750" alt="Velocity magnitude on the symmetry plane">
 </p>
 
 Velocity magnitude on the symmetry plane. The flow stagnates on the nose and
