@@ -1,0 +1,174 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - snappyHexMesh                                                  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+geometry
+{
+    
+    Ahmed_body_stl.stl                        
+    {
+        type    triSurfaceMesh;
+        name    Body;                     
+    }
+
+    boxCorpo
+    {
+    type    searchableBox;
+    min     (-0.30 -0.50 -0.10);
+    max     ( 1.35  0.50  0.60);
+    }
+
+    boxScia
+    {
+    type    searchableBox;
+    min     ( 0.95 -0.85 -0.10);
+    max     ( 7.00  0.85  0.95);
+    }
+    boxPavimento
+    {
+    type    searchableBox;
+    min     (-3.00 -0.90 -0.10);
+    max     ( 3.00  0.90  0.25);
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells       20000000;
+    maxGlobalCells      20000000;
+    minRefinementCells  10;
+    maxLoadUnbalance    0.10;
+    nCellsBetweenLevels 3;
+    resolveFeatureAngle 20;
+
+    allowFreeStandingZoneFaces true;
+
+  
+    features
+    (
+        {
+            file    "Ahmed_body_stl.eMesh";   // <-- DA IMPOSTARE (stesso nome base dell'STL)
+            level   5;
+        }
+    );
+
+    refinementSurfaces
+    {
+        Body
+        {
+            level       (4 5);
+            patchInfo   { type wall; }
+        }
+    }
+
+    refinementRegions
+    {
+        boxCorpo
+        {
+            mode    inside;
+            levels  ((1E15 3));
+        }
+
+        boxScia
+        {
+            mode    inside;
+            levels  ((1E15 2));
+        }
+        boxPavimento
+        {
+            mode inside;
+            levels ((1E15 3));
+        }
+    }
+
+    // Punto NEL FLUIDO: fuori dal corpo, lontano da facce e piani di simmetria.
+    // Usa coordinate non tonde per non cadere esattamente su una faccia di cella.
+    locationInMesh (-4.317 0.613 1.237);             
+}
+
+snapControls
+{
+    nSmoothPatch            3;
+    tolerance               2.0;
+    nSolveIter              30;
+    nRelaxIter              5;
+
+    nFeatureSnapIter        10;
+    implicitFeatureSnap     false;
+    explicitFeatureSnap     true;
+    multiRegionFeatureSnap  false;
+}
+
+addLayersControls
+{
+    // relativeSizes true: gli spessori sono frazioni della cella adiacente.
+    relativeSizes       false;
+
+    layers
+    {
+        Body
+        {
+            nSurfaceLayers  2;            
+        }
+    }
+
+    expansionRatio      1.1;              
+    firstLayerThickness 0.001;              
+    minThickness        0.0003;              
+
+    nGrow               0;
+    featureAngle        130;
+    slipFeatureAngle    30;
+    nRelaxIter          5;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals      3;
+    nSmoothThickness    10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedialAxisAngle  90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter          50;
+    nRelaxedIter        20;
+}
+
+meshQualityControls
+{
+    maxNonOrtho         65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave          80;
+    minVol              1e-13;
+    minTetQuality       1e-15;
+    minArea             -1;
+    minTwist            0.02;
+    minDeterminant      0.001;
+    minFaceWeight       0.02;
+    minVolRatio         0.01;
+    minTriangleTwist    -1;
+
+    nSmoothScale        4;
+    errorReduction      0.75;
+}
+
+writeFlags
+(
+    scalarLevels
+    layerSets
+    layerFields
+);
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //

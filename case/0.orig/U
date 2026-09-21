@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - campo di velocita'                                             |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (40 0 0);              
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform (40 0 0);      
+    }
+
+    outlet
+    {
+        // inletOutlet = zeroGradient se il flusso esce, fixedValue se rientra.
+        // Protegge dalle ricircolazioni che tornano dentro dall'uscita.
+        type            inletOutlet;
+        inletValue      uniform (0 0 0);
+        value           uniform (40 0 0);      
+    }
+
+    Body
+    {
+        type            noSlip;
+    }
+    bottom
+    {
+        type            noSlip;
+    }
+
+    top
+    {
+        type            symmetryPlane;
+    }
+
+    sideMin
+    {
+        type            symmetryPlane;
+    }
+
+    sideMax
+    {
+        type            symmetryPlane;
+    }
+}
+
+// ************************************************************************* //

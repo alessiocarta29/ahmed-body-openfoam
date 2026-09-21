@@ -1,0 +1,61 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - schemi di discretizzazione                                     |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         steadyState;
+}
+
+gradSchemes
+{
+    // default         Gauss linear;  CLASSICO MA MENO ROBUSTO IN MESH SNAPPY
+    default      cellLimited Gauss linear 1;
+}
+
+divSchemes
+{
+    default         none;
+
+    div(phi,U)      bounded Gauss linearUpwind grad(U);   
+
+    div(phi,k)      bounded Gauss limitedLinear 1;        
+    div(phi,omega)  bounded Gauss limitedLinear 1;
+    //UN'ALTERNATIVA PUO' ESSERE GAUSS UPWIND CHE E' DEL PRIMO ORDINE MA E' SEMPRE STABILE        
+
+    div((nuEff*dev2(T(grad(U))))) Gauss linear;
+}
+
+laplacianSchemes
+{
+    // limited corrected 0.33 smorza la correzione di non ortogonalita',
+    // che su una mesh snappy puo' essere aggressiva.
+    // Su mesh ortogonale va bene anche: Gauss linear corrected
+    default         Gauss linear limited corrected 0.33;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         limited corrected 0.33;
+}
+
+// Richiesto dal k-omega SST, che usa la distanza dalla parete
+wallDist
+{
+    method          meshWave;
+}
+
+// ************************************************************************* //

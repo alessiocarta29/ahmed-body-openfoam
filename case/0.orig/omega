@@ -1,0 +1,62 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - frequenza specifica di dissipazione                            |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      omega;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 -1 0 0 0 0];
+
+
+internalField   uniform 16000.0;
+//IL VALORE DI OMEGA VIENE DALL'IMPOSIZIONE CHE LA VISCOSITA' TURBOLENTA EGUAGLI QUELLA MOLECOLARE
+//Pertanto si ha omega = k/mu = 16000 Hz                  
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform 16000.0;          
+    }
+
+    outlet
+    {
+        type            inletOutlet;     //ZEROGRADIENT
+        inletValue      uniform 16000.0;          
+        value           uniform 16000.0;          
+    }
+
+    Body
+    {
+        type            omegaWallFunction;
+        value           uniform 16000.0;          
+    }
+    bottom
+    {
+        type            omegaWallFunction;
+        value           uniform 16000.0;
+    }
+
+    top
+    {
+        type            symmetryPlane;
+    }
+
+    sideMin
+    {
+        type            symmetryPlane;
+    }
+
+    sideMax
+    {
+        type            symmetryPlane;
+    }
+}
+
+// ************************************************************************* //

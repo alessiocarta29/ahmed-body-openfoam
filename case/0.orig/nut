@@ -1,0 +1,61 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - viscosita' turbolenta                                          |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      nut;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -1 0 0 0 0];
+
+// nut non e' risolta: il modello la calcola da k e omega.
+// Questo file serve solo a dare l'inizializzazione e le condizioni a parete.
+internalField   uniform 0;
+
+boundaryField
+{
+    inlet
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+
+    outlet
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+
+
+    Body
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
+    bottom
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
+
+    top
+    {
+        type            symmetryPlane;
+    }
+
+    sideMin
+    {
+        type            symmetryPlane;
+    }
+
+    sideMax
+    {
+        type            symmetryPlane;
+    }
+}
+
+// ************************************************************************* //

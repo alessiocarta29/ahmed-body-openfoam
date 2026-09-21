@@ -1,0 +1,99 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - solutori lineari e controllo SIMPLE                            |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        // PCG+DIC e' corretto ma su una mesh 3D da milioni di celle costa molto.
+        // Alternativa consigliata, multigrid
+        solver GAMG; smoother GaussSeidel; nCellsInCoarsestLevel 100;
+        //solver          PCG;
+        //preconditioner  DIC;
+
+        tolerance       1e-5;      
+        relTol          0.01;
+    }
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+
+        tolerance       1e-5;      
+        relTol          0.1;
+    }
+
+    k
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+
+        tolerance       1e-5;      
+        relTol          0.1;
+    }
+
+    omega
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+
+        tolerance       1e-5;      
+        relTol          0.1;
+    }
+    Phi
+    {
+        solver          GAMG;
+        smoother        DIC;
+        tolerance       1e-5;
+        relTol          0.01;
+    }
+}
+
+SIMPLE
+{
+    nNonOrthogonalCorrectors  1;   
+    consistent                no;  // no = SIMPLE, yes = SIMPLEC
+
+    // Serve solo se p non ha nessuna condizione di Dirichlet.
+    // Con outlet a fixedValue queste due voci restano inerti.
+    pRefCell                  0;
+    pRefValue                 0;
+
+    residualControl
+    {
+        p                     1e-6;    
+        U                     1e-6;    
+        "(k|omega)"           1e-6;    
+    }
+}
+potentialFlow
+{
+    nNonOrthogonalCorrectors 10;
+}
+
+relaxationFactors
+{
+    
+    fields
+    {
+        p                     0.2;     
+    }
+    equations
+    {
+        U                     0.8;    
+        k                     0.7;     
+        omega                 0.7;     
+    }
+}
+
+// ************************************************************************* //

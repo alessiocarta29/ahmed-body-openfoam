@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - estrazione degli spigoli vivi                                  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      surfaceFeatureExtractDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// La chiave e' il nome del file STL in constant/geometry.
+// Produce constant/extendedFeatureEdgeMesh/Ahmed_body.eMesh,
+// che snappyHexMeshDict richiama nella voce features.
+Ahmed_body_stl.stl                          
+{
+    extractionMethod    extractFromSurface;
+
+    // Angolo sotto il quale due facce adiacenti definiscono uno spigolo.
+    //   0   = nessuno spigolo,  180 = tutti gli spigoli
+    // Sull'Ahmed body serve a tenere netti gli spigoli dello slant e della base.
+    includedAngle       165;              
+
+    subsetFeatures
+    {
+        nonManifoldEdges    no;
+        openEdges           yes;
+    }
+
+    // Scrive il risultato in forma visualizzabile, per controllare in ParaView
+    // che gli spigoli estratti siano quelli giusti.
+    writeObj            yes;
+}
+
+// ************************************************************************* //

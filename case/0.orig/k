@@ -1,0 +1,63 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - energia cinetica turbolenta                                    |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -2 0 0 0 0];
+
+// k = 1.5 * (U * I)^2
+//   U = velocita' di ingresso posta a 40 m/s,  I = intensita' di turbolenza posta a 0.01
+internalField   uniform 0.24;              
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform 0.24;      
+    }
+
+    outlet
+    {
+        type            inletOutlet;
+        inletValue      uniform 0.24;      
+        value           uniform 0.24;      
+    }
+
+    // Wall function: vale sia nel regime a parete risolta sia a parete modellata,
+    // il codice commuta in base al y+ locale.
+    Body
+    {
+        type            kqRWallFunction;
+        value           uniform 0.24;      
+    }
+    bottom
+    {
+        type            kqRWallFunction;
+        value           uniform 0.24;
+    }
+
+    top
+    {
+        type            symmetryPlane;
+    }
+
+    sideMin
+    {
+        type            symmetryPlane;
+    }
+
+    sideMax
+    {
+        type            symmetryPlane;
+    }
+}
+
+// ************************************************************************* //

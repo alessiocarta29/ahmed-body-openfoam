@@ -1,0 +1,89 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| Ahmed body - simpleFoam                                                     |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application       simpleFoam;
+
+startFrom         latestTime;
+startTime         0;
+stopAt            endTime;
+endTime           750;            
+deltaT            1;
+
+writeControl      timeStep;
+writeInterval     10;
+//purgeWrite        2;               tiene solo gli ultimi due salvataggi
+writeFormat       ascii;
+writePrecision    12;
+writeCompression  off;
+timeFormat        general;
+timePrecision     6;
+
+runTimeModifiable true;
+
+functions
+{
+    forces
+    {
+        type            forces;
+        libs            (forces);
+        patches         (Body);
+        rho             rhoInf;    // incomprimibile: pressione cinematica
+        rhoInf          1.225;     
+        CofR            (0 0 0);   // <-- DA IMPOSTARE
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+    }
+
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        libs            (forces);
+        patches         (Body);
+        rho             rhoInf;
+        rhoInf          1.225;     
+
+        CofR            (0 0 0);   
+        dragDir         (1 0 0);   // corrente
+        liftDir         (0 0 1);   // verticale
+        pitchAxis       (0 1 0);   // laterale
+
+        magUInf         40;         //(velocita' di riferimento)
+        lRef            1.044;     
+        Aref            0.112;     
+
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+    }
+
+    // Residui iniziali e finali di ogni equazione, in postProcessing/
+    solverInfo
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (U p k omega);
+        writeControl    timeStep;
+        writeInterval   1;
+    }
+
+    // y+ sul corpo: serve a verificare che la risoluzione a parete sia
+    // coerente con le wall function scelte.
+    yPlus
+    {
+        type            yPlus;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+    }
+}
+
+// ************************************************************************* //
